@@ -25,6 +25,7 @@ export class TypeOrmConfig {
       username: configService.get<string>("POSTGRES_USER"),
       password: configService.get<string>("POSTGRES_PASSWORD"),
       database: configService.get<string>("POSTGRES_DATABASE"),
+      logging: true,
       autoLoadEntities: true,
       synchronize: true,
       ssl: {
