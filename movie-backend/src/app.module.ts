@@ -5,6 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { databaseConfig } from "./config/database.config";
 import { envValidationSchema } from "./config/envValidation.config";
 import { AuthModule } from "./auth/auth.module";
+import { MovieModule } from "./movie/movie.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from "./auth/auth.module";
       validationSchema: envValidationSchema,
     }),
     AuthModule,
+    MovieModule,
   ],
 })
 export class AppModule {}

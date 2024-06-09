@@ -7,7 +7,6 @@ import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
-
   private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(User)

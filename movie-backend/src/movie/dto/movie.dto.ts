@@ -1,22 +1,16 @@
-import { IsBoolean, IsDate, IsString } from "class-validator";
-
+import { IsDate, IsOptional, IsString } from "class-validator";
 
 export class MovieDto {
-
-  movieId: number;
-  
-  @IsBoolean()
-  readonly toSort: boolean;
+  @IsString()
+  movieId: string;
 
   @IsString()
   readonly title: string;
 
-  rating: RatingDto;
-
   @IsString()
   readonly description: string;
 
-  @IsDate()
+  @IsDate({ message: "Release date should be a valid date" })
+  @IsOptional()
   readonly releaseDate: Date;
-
 }

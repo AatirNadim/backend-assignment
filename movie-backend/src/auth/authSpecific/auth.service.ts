@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, Res } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { UserService } from "../user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { LoginUserDto } from "../user/dto/login-user.dto";
@@ -55,9 +55,12 @@ export class AuthService {
   setAuthTokens(res, payload: any): { accessToken: string } {
     try {
       const [accessToken] = this.generateTokens(payload);
+      // this.logger.log(
+      //   `Setting auth token: ${accessToken}, expires in ${this.configService.get("JWT_EXPIRATION_SECRET")} seconds`,
+      // );
       res.cookie("access_token", accessToken, {
         httpOnly: true,
-        domain: this.configService.get("DOMAIN"),
+        // domain: this.configService.get("DOMAIN"),
         expires: new Date(
           Date.now() + this.configService.get("JWT_EXPIRATION_SECRET") * 1000,
         ),
@@ -71,7 +74,7 @@ export class AuthService {
 
   clearAuthTokens(res): void {
     res.clearCookie("access_token", {
-      domain: this.configService.get("DOMAIN"),
+      // domain: this.configService.get("DOMAIN"),
       httpOnly: true,
     });
   }

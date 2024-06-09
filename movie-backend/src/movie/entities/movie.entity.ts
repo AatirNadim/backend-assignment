@@ -2,18 +2,15 @@ import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Movie extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  movieId: number;
+  @PrimaryGeneratedColumn("uuid")
+  movieId: string;
 
-  @Column()
+  @Column({ type: "varchar", length: 100 })
   title: string;
 
-  @Column()
+  @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column()
+  @Column({ type: "date", default: new Date() })
   releaseDate: Date;
-
-  @Column()
-  toSort: boolean;
 }

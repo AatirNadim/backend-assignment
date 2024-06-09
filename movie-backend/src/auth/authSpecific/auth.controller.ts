@@ -18,6 +18,12 @@ export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
 
+  @Get("hello")
+  getHello() {
+    this.logger.log(" =========== this endpoint has been called =========== ");
+    return "Hello from auth controller slka s";
+  }
+
   @Post("register")
   async register(
     @Body() { email, password }: CreateUserDto,
