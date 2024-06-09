@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MovieService } from "./movie.service";
 
 @Controller("movie")
@@ -12,7 +12,7 @@ export class MovieController {
   }
 
   @Post()
-  createMovie() {
+  rateMovie(@Body ()  ) {
     return "Create movie";
   }
 }

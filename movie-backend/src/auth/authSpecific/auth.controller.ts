@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  Logger,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
@@ -14,6 +15,7 @@ import { LoginUserDto } from "../user/dto/login-user.dto";
 
 @Controller("auth")
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
 
   @Post("register")
@@ -21,6 +23,7 @@ export class AuthController {
     @Body() { email, password }: CreateUserDto,
     @Res() res,
   ): Promise<User> {
+    this.logger.log(`Registering user with email: ${email}`);
     const user: User = await this.authService.register({ email, password });
     this.authService.setAuthTokens(res, {
       user_id: user.id,
@@ -31,6 +34,7 @@ export class AuthController {
   @Post("login")
   @HttpCode(HttpStatus.OK)
   async login(@Body() { email, password }: LoginUserDto, @Res() res) {
+    this.logger.log(`Logging in user with email: ${email}`);
     const user: User = await this.authService.login({ email, password });
     this.authService.setAuthTokens(res, {
       user_id: user.id,
@@ -44,6 +48,7 @@ export class AuthController {
 
   @Get("logout")
   async logout(@Res() res) {
+    this.logger.log("Logging out user");
     this.authService.clearAuthTokens(res);
     return res.json({
       message: "Logged out",
