@@ -37,6 +37,7 @@ export class MovieService {
 
   async getMovies() {
     try {
+      this.logger.log("Fetching movies");
       const movies = await this.movieRepository.find();
       return movies;
     } catch (err) {
@@ -69,23 +70,47 @@ export class MovieService {
     }
   }
 
-  async createGenreEntry(movieId: string, genres: MOVIE_GENRE[]) {
+  async createGenreEntry(id: string, genres: MOVIE_GENRE[]) {
     try {
-      this.movieGenreRepository.save({ movieId, genres });
+      this.movieGenreRepository.save({ movieId: id, genres });
     } catch (err) {
       this.logger.error(err);
       throw err;
     }
   }
 
-  async createRatingEntry(movieId: string) {
+  async getGenres(id: string) {
+    try {
+      const genres = await this.movieGenreRepository.findOne({
+        where: { movieId: id },
+      });
+      return genres.genres;
+    } catch (err) {
+      this.logger.error(err);
+      throw err;
+    }
+  }
+
+  async createRatingEntry(id: string) {
     try {
       await this.movieRatingRepository.save({
-        movieId,
+        movieId: id,
         avgRating: 0,
         noOfRatings: 0,
       });
       // return movieRating;
+    } catch (err) {
+      this.logger.error(err);
+      throw err;
+    }
+  }
+
+  async getRating(id: string) {
+    try {
+      const rating = await this.movieRatingRepository.findOne({
+        where: { movieId: id },
+      });
+      return rating.avgRating;
     } catch (err) {
       this.logger.error(err);
       throw err;
@@ -98,7 +123,7 @@ export class MovieService {
         where: { id: userId },
       });
       const movie = await this.movieRepository.findOne({
-        where: { movieId },
+        where: { id: movieId },
       });
       if (!user || !movie) {
         throw new NotFoundException("User or movie not found");
@@ -113,6 +138,8 @@ export class MovieService {
       });
       this.logger.log(`Curr rating state: ${JSON.stringify(currRatingState)}`);
 
+      let avg = currRatingState.avgRating;
+      let noOfRatings = currRatingState.noOfRatings;
       if (prevUserRating) {
         currRatingState.avgRating =
           (currRatingState.avgRating * currRatingState.noOfRatings -
@@ -123,9 +150,6 @@ export class MovieService {
         await this.userRatingRepository.save(prevUserRating);
         await this.movieRatingRepository.save(currRatingState);
       } else {
-        let avg = currRatingState.avgRating;
-        let noOfRatings = currRatingState.noOfRatings;
-
         this.logger.log(
           `Avg movie rating: ${avg}, No of ratings: ${noOfRatings}, user rating: ${rating}`,
         );
@@ -140,6 +164,8 @@ export class MovieService {
           avgRating: avg,
           noOfRatings: noOfRatings,
         });
+        currRatingState.avgRating = avg;
+        currRatingState.noOfRatings = noOfRatings;
         this.logger.log(`Movie rating has been stored/updated`);
         await this.userRatingRepository.save({
           userId,

@@ -1,5 +1,5 @@
 import { MOVIE_GENRE } from "@/enums/movie-genre.enum";
-import { ArrayNotEmpty, IsArray, IsNumber } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsString } from "class-validator";
 // import {} from
 
 export class MovieGenreDto {
@@ -7,6 +7,6 @@ export class MovieGenreDto {
   @ArrayNotEmpty({ message: "Genres array should not be empty" })
   genres: MOVIE_GENRE[];
 
-  @IsNumber()
+  @IsString()
   movieId: string;
 }

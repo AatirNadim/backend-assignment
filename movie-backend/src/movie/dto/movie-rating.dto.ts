@@ -1,7 +1,7 @@
-import { IsInt, IsNumber } from "class-validator";
+import { IsInt, IsNumber, IsString } from "class-validator";
 
 export class MovieRatingDto {
-  @IsNumber()
+  @IsString()
   movieId: string;
 
   @IsNumber()

@@ -32,10 +32,10 @@ export class UserRating extends BaseEntity {
   user: User;
 
   @PrimaryColumn()
-  movieId: string;
+  id: string;
 
-  @ManyToOne(() => Movie, (movie) => movie.movieId)
-  @JoinColumn({ name: "movieId", referencedColumnName: "movieId" })
+  @ManyToOne(() => Movie, (movie) => movie.id)
+  @JoinColumn({ name: "id", referencedColumnName: "id" })
   movie: Movie;
 
   @Column({ type: "int", enum: [1, 2, 3, 4, 5] })

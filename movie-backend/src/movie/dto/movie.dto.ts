@@ -2,7 +2,7 @@ import { IsDate, IsOptional, IsString } from "class-validator";
 
 export class MovieDto {
   @IsString()
-  movieId: string;
+  id: string;
 
   @IsString()
   readonly title: string;

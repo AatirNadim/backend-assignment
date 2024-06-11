@@ -12,7 +12,7 @@ import { MovieRating } from "./movie-rating.entity";
 @Entity()
 export class Movie extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
-  movieId: string;
+  id: string;
 
   @Column({ type: "varchar", length: 100 })
   title: string;

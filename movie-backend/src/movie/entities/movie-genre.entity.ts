@@ -15,6 +15,6 @@ export class MovieGenre extends BaseEntity {
   genres: MOVIE_GENRE[];
 
   @PrimaryColumn()
-  @OneToOne(() => Movie, (movie) => movie.movieId)
+  @OneToOne(() => Movie, (movie) => movie.id)
   movieId: string;
 }

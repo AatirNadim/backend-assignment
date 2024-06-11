@@ -7,17 +7,47 @@ import { Movie } from "./entities/movie.entity";
 import { MovieGenreDto } from "./dto/movie-genre.dto";
 import { Response } from "express";
 import { UserRatingDto } from "./dto/user-rating.dto";
+import { MOVIE_GENRE } from "@/enums/movie-genre.enum";
+
+type MovieWrapper = Movie & { genres: MOVIE_GENRE[]; rating: number };
 
 @Controller("movies")
 export class MovieController {
   private readonly logger = new Logger(MovieController.name);
   constructor(private readonly movieService: MovieService) {}
   @Get()
-  async getMovies(@Res() response: Response) {
+  async getMovies(
+    @Body()
+    {
+      genreFilter,
+      sortByRating = false,
+    }: { genreFilter?: MOVIE_GENRE[]; sortByRating: boolean },
+    @Res() response: Response,
+  ) {
     try {
-      const movies = await this.movieService.getMovies();
-      this.logger.log(`Movies fetched : ${movies}`);
-      return movies;
+      let movies: any[] = await this.movieService.getMovies();
+      const promiseArr = movies.map(async (movie: MovieWrapper) => {
+        movie.genres = await this.movieService.getGenres(movie.id);
+        movie.rating = await this.movieService.getRating(movie.id);
+      });
+      await Promise.all(promiseArr);
+      this.logger.log(`Genrefilters : ${JSON.stringify(genreFilter)}`);
+      if (genreFilter && genreFilter.length > 0) {
+        movies = movies.filter((movie: MovieWrapper) =>
+          movie.genres.some((genre) => genreFilter.includes(genre)),
+        );
+
+        this.logger.log(`Movies filtered : ${JSON.stringify(movies)}`);
+        // return response.status(200).json({ movies: filteredMovies });
+      }
+      if (sortByRating) {
+        movies = movies.sort(
+          (a: MovieWrapper, b: MovieWrapper) => b.rating - a.rating,
+        );
+      }
+
+      this.logger.log(`Movies fetched : ${JSON.stringify(movies)}`);
+      return response.status(200).json({ movies });
     } catch (err) {
       this.logger.error(err);
       return response.status(500).json({
@@ -49,10 +79,10 @@ export class MovieController {
         title,
       });
 
-      await this.movieService.createGenreEntry(movie.movieId, genres);
+      await this.movieService.createGenreEntry(movie.id, genres);
       this.logger.log(`Movie genre entry created : ${movie}`);
 
-      await this.movieService.createRatingEntry(movie.movieId);
+      await this.movieService.createRatingEntry(movie.id);
       this.logger.log(`Movie rating entry created : ${movie}`);
 
       return response.status(201).json({ message: "Movie created", movie });
@@ -77,7 +107,9 @@ export class MovieController {
         movieId,
         rating,
       });
-      return response.status(201).json({ message: "Movie rated", rateResp });
+      return response
+        .status(201)
+        .json({ message: "Movie rated", newRating: rateResp });
     } catch (err) {
       this.logger.error(err);
       return response.status(500).json({
