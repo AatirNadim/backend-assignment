@@ -92,11 +92,7 @@ export class MovieService {
     }
   }
 
-  async rateMovie(
-    userId: string,
-    movieId: string,
-    ratingRef: Pick<UserRatingDto, "rating">,
-  ) {
+  async rateMovie({ userId, movieId, rating }: UserRatingDto) {
     try {
       const user = await this.userRepository.findOne({
         where: { id: userId },
@@ -121,9 +117,9 @@ export class MovieService {
         currRatingState.avgRating =
           (currRatingState.avgRating * currRatingState.noOfRatings -
             prevUserRating.rating +
-            ratingRef.rating) /
+            rating) /
           currRatingState.noOfRatings;
-        prevUserRating.rating = ratingRef.rating;
+        prevUserRating.rating = rating;
         await this.userRatingRepository.save(prevUserRating);
         await this.movieRatingRepository.save(currRatingState);
       } else {
@@ -131,15 +127,10 @@ export class MovieService {
         let noOfRatings = currRatingState.noOfRatings;
 
         this.logger.log(
-          `Avg movie rating: ${avg}, No of ratings: ${noOfRatings}, user rating: ${ratingRef.rating}`,
+          `Avg movie rating: ${avg}, No of ratings: ${noOfRatings}, user rating: ${rating}`,
         );
-        avg = (avg * noOfRatings + ratingRef.rating) / (noOfRatings + 1);
+        avg = (avg * noOfRatings + rating) / (noOfRatings + 1);
         noOfRatings += 1;
-        // currRatingState.avgRating =
-        //   (currRatingState.avgRating * currRatingState.noOfRatings +
-        //     ratingRef.rating) /
-        //   (currRatingState.noOfRatings + 1);
-        // currRatingState.noOfRatings += 1;
         this.logger.log(
           `Avg movie rating has been stored --> ${JSON.stringify({ avg, noOfRatings })}`,
         );
@@ -149,10 +140,13 @@ export class MovieService {
           avgRating: avg,
           noOfRatings: noOfRatings,
         });
+        this.logger.log(`Movie rating has been stored/updated`);
         await this.userRatingRepository.save({
           userId,
           movieId,
-          rating: ratingRef.rating,
+          rating,
+          movie,
+          user,
         });
         this.logger.log(`User rating has been stored`);
       }

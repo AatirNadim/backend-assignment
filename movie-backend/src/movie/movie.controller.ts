@@ -68,23 +68,15 @@ export class MovieController {
   @Post("rate")
   async rateMovie(
     @Body()
-    {
-      userId,
-      movieId,
-      rating,
-    }: {
-      userId: string;
-      movieId: string;
-      rating: Pick<UserRatingDto, "rating">;
-    },
+    { userId, movieId, rating }: UserRatingDto,
     @Res() response: Response,
   ) {
     try {
-      const rateResp = await this.movieService.rateMovie(
+      const rateResp = await this.movieService.rateMovie({
         userId,
         movieId,
         rating,
-      );
+      });
       return response.status(201).json({ message: "Movie rated", rateResp });
     } catch (err) {
       this.logger.error(err);
