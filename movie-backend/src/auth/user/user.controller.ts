@@ -8,7 +8,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get(":id")
-  findOne(@Param("id") id: number): Promise<User> {
+  findOne(@Param("id") id: string): Promise<User> {
     return this.userService.findOne(id);
   }
 

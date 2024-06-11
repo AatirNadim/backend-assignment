@@ -1,73 +1,82 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# AUTH MODULE
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The `Auth` module exposes several endpoints for user authentication. Here’s a concise explanation of each:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### 1. GET /auth/hello
 
-## Description
+- **Purpose**: Test endpoint to check if the controller is working.
+- **Process**: Logs a message and returns a simple greeting.
+- **Response**: Returns the string "Hello from auth controller slka s".
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 2. POST /auth/register
 
-## Installation
+- **Purpose**: Register a new user.
+- **Parameters**:
+  - `email`: Email of the user to be registered (from the request body).
+  - `password`: Password of the user to be registered (from the request body).
+- **Process**:
+  - Logs a message with the user's email.
+  - Calls `register` method in `AuthService` to create a new user.
+  - Sets authentication tokens in the response.
+- **Response**: Returns the created user details without the password.
 
-```bash
-$ npm install
-```
+### 3. POST /auth/login
 
-## Running the app
+- **Purpose**: Login an existing user.
+- **Parameters**:
+  - `email`: Email of the user to be logged in (from the request body).
+  - `password`: Password of the user to be logged in (from the request body).
+- **Process**:
+  - Logs a message with the user's email.
+  - Calls `login` method in `AuthService` to authenticate the user.
+  - Sets authentication tokens in the response.
+- **Response**: Returns the authenticated user details without the password.
 
-```bash
-# development
-$ npm run start
+### 4. GET /auth/logout
 
-# watch mode
-$ npm run start:dev
+- **Purpose**: Logout the current user.
+- **Process**:
+  - Logs a message indicating the user is being logged out.
+  - Calls `clearAuthTokens` method in `AuthService` to clear authentication tokens.
+- **Response**: Returns a message indicating the user has been logged out.
 
-# production mode
-$ npm run start:prod
-```
+The `Movie` module exposes three endpoints for managing movies. Here’s a concise explanation of each:
 
-## Test
+# MOVIE MODULE
 
-```bash
-# unit tests
-$ npm run test
+### 1. GET /movies
 
-# e2e tests
-$ npm run test:e2e
+- **Purpose**: Fetch a list of movies.
+- **Parameters**:
+  - `genreFilter` (optional): Array of genres to filter movies by.
+  - `sortByRating` (optional, defaults to `false`): If `true`, sorts the movies by their rating (in descending order, to get the most popular movies first).
+- **Process**:
+  - Retrieves movies and their associated genres and ratings.
+  - Filters movies by specified genres if `genreFilter` is provided.
+  - Sorts movies by rating if `sortByRating` is `true`.
+- **Response**: Returns a list of movies with their genres and ratings.
 
-# test coverage
-$ npm run test:cov
-```
+### 2. POST /movies/add
 
-## Support
+- **Purpose**: Add a new movie.
+- **Parameters**:
+  - `title`: Title of the movie.
+  - `description`: Description of the movie.
+  - `releaseDate` (optional, defaults to current date): Release date of the movie.
+  - `genres`: Array of genres for the movie.
+- **Process**:
+  - Creates a new movie entry.
+  - Associates the movie with specified genres.
+  - Initializes the movie's rating.
+- **Response**: Returns a success message with the created movie details.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 3. POST /movies/rate
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- **Purpose**: Rate a movie.
+- **Parameters**:
+  - `userId`: ID of the user rating the movie.
+  - `movieId`: ID of the movie to be rated.
+  - `rating`: Rating given by the user.
+- **Process**:
+  - Adds a rating for the specified movie by the user.
+- **Response**: Returns a success message with the new rating.

@@ -110,7 +110,7 @@ export class MovieService {
       const rating = await this.movieRatingRepository.findOne({
         where: { movieId: id },
       });
-      return rating.avgRating;
+      return { avgRating: rating.avgRating, noOfRatings: rating.noOfRatings };
     } catch (err) {
       this.logger.error(err);
       throw err;

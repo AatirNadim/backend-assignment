@@ -9,7 +9,10 @@ import { Response } from "express";
 import { UserRatingDto } from "./dto/user-rating.dto";
 import { MOVIE_GENRE } from "@/enums/movie-genre.enum";
 
-type MovieWrapper = Movie & { genres: MOVIE_GENRE[]; rating: number };
+type MovieWrapper = Movie & {
+  genres: MOVIE_GENRE[];
+  rating: { avgRating: number; noOfRatings: number };
+};
 
 @Controller("movies")
 export class MovieController {
@@ -42,7 +45,8 @@ export class MovieController {
       }
       if (sortByRating) {
         movies = movies.sort(
-          (a: MovieWrapper, b: MovieWrapper) => b.rating - a.rating,
+          (a: MovieWrapper, b: MovieWrapper) =>
+            b.rating.avgRating - a.rating.avgRating,
         );
       }
 
