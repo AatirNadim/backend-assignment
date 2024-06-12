@@ -4,6 +4,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { DatabaseExceptionFilter } from "./filters/database-exception.filter";
 import * as cookieParser from "cookie-parser";
 import { ConfigService } from "@nestjs/config";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule, {
@@ -16,6 +17,17 @@ async function bootstrap() {
   app.useGlobalFilters(new DatabaseExceptionFilter());
   const configService = app.get(ConfigService);
   const port = configService.get<number>("PORT") || 3001;
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle("API")
+    .setDescription("API description")
+    .setVersion("1.0")
+    .build();
+
+  const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
+
+  SwaggerModule.setup("api-docs", app, swaggerDoc);
+
   await app.listen(port);
 }
 bootstrap();
