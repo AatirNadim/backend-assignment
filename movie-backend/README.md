@@ -1,4 +1,14 @@
-# AUTH MODULE
+<!-- include information about the swagger docs on route /api-docs -->
+
+# SWAGGER API DOCS
+
+Swagger Api Docs are avaible on the endpoint `/api-docs` after starting the server.
+
+# API LIST
+
+The API is divided into two modules: `Auth` and `Movie`. Each module has its own set of endpoints for different purposes.
+
+## AUTH MODULE
 
 The `Auth` module exposes several endpoints for user authentication. Here’s a concise explanation of each:
 
@@ -42,7 +52,7 @@ The `Auth` module exposes several endpoints for user authentication. Here’s a 
 
 The `Movie` module exposes three endpoints for managing movies. Here’s a concise explanation of each:
 
-# MOVIE MODULE
+## MOVIE MODULE
 
 ### 1. GET /movies
 

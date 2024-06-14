@@ -1,9 +1,8 @@
 import { MOVIE_GENRE } from "@/enums/movie-genre.enum";
-import { ArrayNotEmpty, IsArray, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-// import {} from
+import { ArrayNotEmpty, IsArray } from "class-validator";
 
-export class MovieGenreDto {
+export class MovieFetchDto {
   @ApiProperty({
     example: [
       "ACTION",
@@ -17,16 +16,16 @@ export class MovieGenreDto {
       "WESTERN",
     ],
     description:
-      "The genres of the movie, only the genres in the array given as example are allowed",
+      "The genres to filter the movie, can be left empty to get all movies",
   })
   @IsArray({ message: "Genres should be an array" })
   @ArrayNotEmpty({ message: "Genres array should not be empty" })
-  genres: MOVIE_GENRE[];
+  genreFilter: MOVIE_GENRE[];
 
   @ApiProperty({
-    example: "9f8199fb-f60e-4840-b8f9-6a6b2a81e5f3",
-    description: "The id of the movie",
+    example: true,
+    description: "Sorts the movies by rating in descending order, if true",
+    required: false,
   })
-  @IsString()
-  movieId: string;
+  sortByRating: boolean;
 }

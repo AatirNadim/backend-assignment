@@ -19,8 +19,8 @@ async function bootstrap() {
   const port = configService.get<number>("PORT") || 3001;
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle("API")
-    .setDescription("API description")
+    .setTitle("Movie-Backend API")
+    .setDescription("The Movie-Backend API description")
     .setVersion("1.0")
     .build();
 

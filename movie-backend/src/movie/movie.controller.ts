@@ -8,23 +8,34 @@ import { MovieGenreDto } from "./dto/movie-genre.dto";
 import { Response } from "express";
 import { UserRatingDto } from "./dto/user-rating.dto";
 import { MOVIE_GENRE } from "@/enums/movie-genre.enum";
+import { ApiTags, ApiExtraModels } from "@nestjs/swagger";
+import { MovieRatingDto } from "./dto/movie-rating.dto";
+import { ApiResponse, ApiBody } from "@nestjs/swagger";
+import { MovieFetchDto } from "./dto/movie-fetch.dto";
 
 type MovieWrapper = Movie & {
   genres: MOVIE_GENRE[];
   rating: { avgRating: number; noOfRatings: number };
 };
 
+// type FetchMovieReq = { genreFilter?: MOVIE_GENRE[]; sortByRating: boolean };
+@ApiExtraModels(MovieDto, MovieGenreDto, UserRatingDto, MovieRatingDto)
+@ApiTags("movies")
 @Controller("movies")
 export class MovieController {
   private readonly logger = new Logger(MovieController.name);
   constructor(private readonly movieService: MovieService) {}
   @Get()
+  // @ApiBody({ schema: FetchMovieReq, description: "The movie to be fetched" })
+  @ApiResponse({
+    status: 200,
+    description: "Movies fetched",
+  })
+  @ApiResponse({ status: 500, description: "Error fetching movies" })
+  @ApiBody({ type: MovieFetchDto, description: "The movie to be fetched" })
   async getMovies(
     @Body()
-    {
-      genreFilter,
-      sortByRating = false,
-    }: { genreFilter?: MOVIE_GENRE[]; sortByRating: boolean },
+    { genreFilter, sortByRating = false }: MovieFetchDto,
     @Res() response: Response,
   ) {
     try {
@@ -62,6 +73,8 @@ export class MovieController {
   }
 
   @Post("add")
+  @ApiResponse({ status: 200, description: "Movie created" })
+  @ApiResponse({ status: 500, description: "Error creating movie" })
   async createMovie(
     @Body()
     {
@@ -89,7 +102,7 @@ export class MovieController {
       await this.movieService.createRatingEntry(movie.id);
       this.logger.log(`Movie rating entry created : ${movie}`);
 
-      return response.status(201).json({ message: "Movie created", movie });
+      return response.status(200).json({ message: "Movie created", movie });
     } catch (err) {
       this.logger.error(err);
       return response.status(500).send({
@@ -100,6 +113,12 @@ export class MovieController {
   }
 
   @Post("rate")
+  @ApiBody({
+    type: UserRatingDto,
+    description: "The rating to be given by the user",
+  })
+  @ApiResponse({ status: 200, description: "Movie rated" })
+  @ApiResponse({ status: 500, description: "Error rating movie" })
   async rateMovie(
     @Body()
     { userId, movieId, rating }: UserRatingDto,
@@ -112,7 +131,7 @@ export class MovieController {
         rating,
       });
       return response
-        .status(201)
+        .status(200)
         .json({ message: "Movie rated", newRating: rateResp });
     } catch (err) {
       this.logger.error(err);
