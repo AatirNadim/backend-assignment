@@ -1,24 +1,28 @@
-# Use the official Node.js 14 image as the base image
-FROM node:14
+# Base image
+FROM node:20
 
-# Set the working directory inside the container
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json files to the working directory
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
-# Install the app dependencies
-RUN npm install
+# Install app dependencies
+RUN npm install -f
 
-# Copy the rest of the application code to the working directory
+# Bundle app source
 COPY . .
 
-ARG port=3002
+# Copy the .env and .env.development files
+# COPY .env .env.development ./
 
-ENV server_port=${port}
+# # Creates a "dist" folder with the production build
+# RUN npm run 
 
-# Expose the port that the Nest.js app will be running on
+ENV server_port=3002
+
+# Expose the port on which the app will run
 EXPOSE ${server_port}
 
-# Start the Nest.js app
+# Start the server using the production build
 CMD ["npm", "run", "start"]
