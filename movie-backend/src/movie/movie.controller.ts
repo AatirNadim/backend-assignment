@@ -35,7 +35,7 @@ export class MovieController {
   @ApiBody({ type: MovieFetchDto, description: "The movie to be fetched" })
   async getMovies(
     @Body()
-    { genreFilter, sortByRating = false }: MovieFetchDto,
+    { genreFilter = [], sortByRating = false }: MovieFetchDto,
     @Res() response: Response,
   ) {
     try {

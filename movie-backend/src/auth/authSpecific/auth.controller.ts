@@ -29,7 +29,7 @@ export class AuthController {
   }
 
   @Post("register")
-  @ApiResponse({ status: 200, description: "User created" })
+  @ApiResponse({ status: 201, description: "User created" })
   @ApiBody({ type: CreateUserDto, description: "The user to be created" })
   async register(
     @Body() { email, password }: CreateUserDto,
