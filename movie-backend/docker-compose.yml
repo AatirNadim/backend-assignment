@@ -1,22 +1,48 @@
-version: '3'
-services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - ./data:/var/lib/postgresql/data
+# version: '3'
+# services:
+#   db:
+#     image: postgres
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=${POSTGRES_USER}
+#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#       - POSTGRES_DB=${POSTGRES_DB}
+#     volumes:
+#       - ./data:/var/lib/postgresql/data
 
-  app:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       args:
+#         - SERVER_PORT=${SERVER_PORT}
+#     ports:
+#       - ${SERVER_PORT}:${SERVER_PORT}
+#     depends_on:
+#       - db
+
+version: "3"
+services:
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - SERVER_PORT=${SERVER_PORT}
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+      - 3002:3002
     depends_on:
-      - db
+      aatir:
+        condition: service_healthy
+
+  aatir:
+    image: postgres:15.5
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

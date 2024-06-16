@@ -20,11 +20,11 @@ export class TypeOrmConfig {
   static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
     return {
       type: "postgres",
-      host: "localhost" || configService.get<string>("POSTGRES_HOST"),
-      port: 5432 || configService.get<number>("POSTGRES_PORT"),
-      username: "user" || configService.get<string>("POSTGRES_USER"),
-      password: "pass" || configService.get<string>("POSTGRES_PASSWORD"),
-      database: "db" || configService.get<string>("POSTGRES_DATABASE"),
+      host: configService.get<string>("POSTGRES_HOST") || "localhost",
+      port: configService.get<number>("POSTGRES_PORT") || 5432,
+      username: configService.get<string>("POSTGRES_USER") || "user",
+      password: configService.get<string>("POSTGRES_PASSWORD") || "pass",
+      database: configService.get<string>("POSTGRES_DATABASE") || "db",
       logging: true,
       autoLoadEntities: true,
       synchronize: true,
